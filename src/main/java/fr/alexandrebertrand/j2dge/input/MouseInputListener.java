@@ -1,4 +1,4 @@
-package fr.alexandrebertrand.j2dge;
+package fr.alexandrebertrand.j2dge.input;
 
 import java.awt.Point;
 import java.awt.Shape;
@@ -11,20 +11,20 @@ import java.awt.event.MouseListener;
  * @author Alexandre Bertrand
  */
 public class MouseInputListener implements MouseListener {
-    
+
     /*
      * Attributes
      */
-    
+
     /** Current pressed button */
     private int button;
-    
-    /** Position of the mouse cursor */
+
+    /** Location of the mouse cursor */
     private Point cursor;
-    
+
     /** Is a mouse button pressed */
     private boolean pressed;
-    
+
     /*
      * Methods
      */
@@ -54,7 +54,7 @@ public class MouseInputListener implements MouseListener {
     @Override
     public void mouseExited(MouseEvent event) {
     }
-    
+
     /**
      * Indicate if the cursor intersects a shape
      * when a mouse button is pressed
@@ -70,11 +70,11 @@ public class MouseInputListener implements MouseListener {
         } // else
         return shape.contains(cursor);
     }
-    
+
     /*
      * Getters & Setters
      */
-    
+
     /**
      * Get pressed button
      * 

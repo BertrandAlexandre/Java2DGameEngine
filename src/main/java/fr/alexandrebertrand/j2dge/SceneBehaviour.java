@@ -1,15 +1,16 @@
 package fr.alexandrebertrand.j2dge;
 
+import fr.alexandrebertrand.j2dge.manager.ResourcesLoader;
+import fr.alexandrebertrand.j2dge.util.DeltaTime;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -20,125 +21,153 @@ import javax.swing.Timer;
  * @author Alexandre Bertrand
  */
 public abstract class SceneBehaviour extends JPanel implements ActionListener {
-    
+
     /*
      * Constants
      */
 
     /** Preferred number of frames per second */
-    private static final int FRAMES_PER_SECOND = 60; // TODO use setting manager
-    
+    private static final int FRAMES_PER_SECOND = 1000; // TODO use setting manager
+
     /*
      * Attributes
      */
-    
-    /** Last loop of the scene */
-    private LocalDateTime lastLoop;
-    
-    /** Time between last and current loops */
-    public static long deltaTime;
-    
+
     /** Timer of the scene */
     private final Timer timer;
-    
+
     /** Objects of the scene */
-    protected final List<ObjectBehaviour> objects;
-    
-    /** Collision detector of the scene */
-    private final CollisionDetector collisionDetector;
-    
+    private final List<GameObject> gameObjects;
+
+    /** Ressources loader of the scene */
+    private final ResourcesLoader resourcesLoader;
+
+    /** Default Game objects color */
+    private Color defaultObjectColor;
+
     /*
      * Constructors
      */
-    
+
     /**
      * Initialize a new Scene and start scene management
      */
     public SceneBehaviour() {
-        collisionDetector = new CollisionDetector();
-        objects = new ArrayList<>();
-        int ms = (int) Math.round(1000d / FRAMES_PER_SECOND);
+        gameObjects = new CopyOnWriteArrayList<>();
+        resourcesLoader = new ResourcesLoader();
+
+        setVisible(true);
+        setOpaque(true);
+        setBackground(Color.BLACK);
+        defaultObjectColor = Color.WHITE;
+
+        DeltaTime.init();
+        int ms = (int) Math.round((double) (1000d / FRAMES_PER_SECOND));
         timer = new Timer(ms, this);
         timer.start();
     }
-    
+
     /*
      * Methods
      */
 
+    /**
+     * Initialize this scene
+     */
+    public void initScene() {
+    }
+
+    /**
+     * Initialize game objects of this scene
+     */
+    public void initObjects() {
+    }
+
     @Override
-    public void actionPerformed(ActionEvent arg0) {
-        setDeltaTime();
+    public final void actionPerformed(ActionEvent arg0) {
+        DeltaTime.set();
         checkCollisions();
+        gameObjects.forEach((o) -> o.doUpdate());
         repaint();
     }
-    
-    /**
-     * Set delta time of the scene
-     */
-    private void setDeltaTime() {
-        deltaTime = lastLoop.until(LocalTime.now(), ChronoUnit.MILLIS);
-        lastLoop = LocalDateTime.now();
-    }
-    
+
     /**
      * Check collisions of scene objects
      */
     private void checkCollisions() {
-        collisionDetector.updateCollisions();
-        objects.forEach(o -> {
-            o.getColliders().forEach((k, v) -> {
-                List<Collider> entry = k.searchCollisions(false, true);
-                List<Collider> stay = k.searchCollisions(true, true);
-                List<Collider> exit = k.searchCollisions(true, false);
-                if (entry.size() > 0)
-                    o.onCollisionEntry(entry);
-                if (stay.size() > 0)
-                    o.onCollisionStay(stay);
-                if (exit.size() > 0)
-                    o.onCollisionExit(exit);
-            });
-        });
+        GameBehaviour.collisionDetector.updateCollisions();
+        gameObjects.forEach(o -> o.checkCollisions());
     }
-    
+
     @Override
-    public void paintComponent(Graphics g) {
+    public final void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                              RenderingHints.VALUE_ANTIALIAS_ON);
-        objects.forEach((o) -> o.paint(g2d));
+        gameObjects.forEach((o) -> o.doPaint(g2d));
     }
-    
+
     /**
-     * Add an object to the scene
+     * Add a game object to the scene
      * 
-     * @param object Object to add
+     * @param gameObject Game object to add
      */
-    public void addObject(ObjectBehaviour object) {
-        objects.add(object);
+    public final void addGameObject(GameObject gameObject) {
+        gameObjects.add(gameObject);
     }
-    
+
+    /**
+     * Remove game object from the scene
+     * 
+     * @param gameObject Game object to remove
+     */
+    public final void removeGameObject(GameObject gameObject) {
+        gameObjects.remove(gameObject);
+    }
+
+    /**
+     * Get all game objects of the scene
+     * 
+     * @return All game objects of the scene
+     */
+    public final List<GameObject> getAllObjects() {
+        List<GameObject> go = new ArrayList<>();
+        gameObjects.forEach(c -> {
+            c.getAllChildren().forEach(cc -> go.add(cc));
+        });
+        return go;
+    }
+
     /*
      * Getters & Setters
      */
-    
+
     /**
-     * Get delta time of the scene
+     * Get scene resource loader
      * 
-     * @return Delta time of the scene
+     * @return Scene resource loader
      */
-    public long getDeltaTime() {
-        return deltaTime;
+    public ResourcesLoader getResourcesLoader() {
+        return resourcesLoader;
     }
-    
+
     /**
-     * Get collision detector of the scene
+     * Get scene default object color
      * 
-     * @return Collision detector of the scene
+     * @return Default object color
      */
-    CollisionDetector getCollisionDetector() {
-        return collisionDetector;
+    public final Color getDefaultObjectColor() {
+        return defaultObjectColor;
+    }
+
+    /**
+     * Set scene default object color
+     * 
+     * @param defaultObjectColor New default object color
+     */
+    public final void setDefaultObjectColor(Color defaultObjectColor) {
+        this.defaultObjectColor = defaultObjectColor;
     }
 
 }

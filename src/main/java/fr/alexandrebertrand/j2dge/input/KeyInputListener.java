@@ -1,4 +1,4 @@
-package fr.alexandrebertrand.j2dge;
+package fr.alexandrebertrand.j2dge.input;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -12,21 +12,21 @@ import java.time.temporal.ChronoUnit;
  * @author Alexandre Bertrand
  */
 public class KeyInputListener implements KeyListener {
-    
+
     /*
      * Attributes
      */
-    
+
     /** Keys status */
     private final boolean[] keys = new boolean[256];
-    
+
     /** Time since last key inputs */
     private final LocalDateTime[] lastInputs = new LocalDateTime[256];
 
     /*
      * Methods
      */
-    
+
     @Override
     public void keyPressed(KeyEvent event) {
         keys[event.getKeyCode()] = true;
@@ -41,7 +41,7 @@ public class KeyInputListener implements KeyListener {
     @Override
     public void keyTyped(KeyEvent event) {
     }
-    
+
     /**
      * Indicate time in seconds since last input
      * 
@@ -51,11 +51,11 @@ public class KeyInputListener implements KeyListener {
     public double sinceLastInput(int key) {
         return lastInputs[key].until(LocalTime.now(), ChronoUnit.MILLIS) / 1000d;
     }
-    
+
     /*
      * Getters & Setters
      */
-    
+
     /**
      * Indicate if a key is currently pressed
      * 
@@ -66,7 +66,7 @@ public class KeyInputListener implements KeyListener {
     public boolean isPressed(int key) {
         return keys[key];
     }
-    
+
     /**
      * Indicate if a key is currently released
      * 
