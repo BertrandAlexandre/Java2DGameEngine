@@ -5,9 +5,9 @@
   
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>fr.alexandrebertrand.j2dge</groupId>
-  <artifactId>java-2d-game-engine</artifactId>
-  <version>0.1.0</version>
+  <groupId>fr.alexandrebertrand.game</groupId>
+  <artifactId>java2d-game-engine</artifactId>
+  <version>0.2.0</version>
   <packaging>jar</packaging>
 
   <name>Java2DGameEngine</name>
