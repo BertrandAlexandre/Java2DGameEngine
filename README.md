@@ -10,7 +10,7 @@ A simple 2D game engine made with Java.
 ## QuickStart
 
 - Download the [latest release](https://github.com/BertrandAlexandre/Java2DGameEngine/releases).
-- Import `Java2DGameEngine.jar` into your project dependencies.
+- Import `java2d-game-engine.jar` into your project dependencies.
 - Install into local repository using command :
 ```Shell
 mvn install:install-file -Dfile={path-to-jar}
