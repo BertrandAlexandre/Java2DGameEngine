@@ -44,6 +44,40 @@ mvn install:install-file -Dfile={path-to-jar}
 | ShapeRenderer   | Renderer |
 | SpriteRenderer  | Renderer |
 
+## On going
+
+### Camera
+
+Add camera options:
+- Add zoom
+- Add smooth motion
+
+### Lights
+
+Add lights:
+- Types:
+  - Point
+  - Spot
+  - Directionnal
+  - Area (rectangle, elipse, polygon)
+- Parameters:
+  - Color
+  - Intensity
+  - Radius
+  - Gradient
+
+### Audio system
+
+Add audio system:
+- Audio source component
+- Audio listener
+
+### Input management system
+
+Add input management system:
+- JSON configuration (with maven archetype)
+- Link to key listener
+
 ## License
 
 **Java2DGameEngine** is licensed under the [MIT License](https://github.com/BertrandAlexandre/Java2DGameEngine/blob/master/LICENSE).
